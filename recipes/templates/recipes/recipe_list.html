@@ -23,18 +23,20 @@
     </div>
 
     <!-- Category Filters -->
-    <div class="container mx-auto px-4 py-8 flex flex-wrap justify-center gap-2 mb-8">
-        <a href="{% url 'recipes:recipe_list' %}" 
-           class="px-4 py-2 rounded-full {% if not current_category %}bg-primary-600 text-white{% else %}bg-gray-200 text-gray-800 hover:bg-gray-300{% endif %} transition">
-            All
-        </a>
-        {% for category in categories %}
-            <a href="{% url 'recipes:recipe_list' %}?category={{ category.slug }}" 
-               class="px-4 py-2 rounded-full {% if current_category == category.slug %}bg-primary-600 text-white{% else %}bg-gray-200 text-gray-800 hover:bg-gray-300{% endif %} transition">
-                {{ category.name }}
+   <div class="overflow-y-auto container mx-auto">
+        <div class="mx-auto px-4 flex gap-2 mb-8 pr-4 !max-w-full w-fit">
+            <a href="{% url 'recipes:recipe_list' %}" 
+            class="px-4 py-2 rounded-full {% if not current_category %}bg-primary-600 text-white{% else %}bg-gray-200 text-gray-800 hover:bg-gray-300{% endif %} transition">
+                All
             </a>
-        {% endfor %}
-    </div>
+            {% for category in categories %}
+                <a href="{% url 'recipes:recipe_list' %}?category={{ category.slug }}" 
+                class="px-4 py-2 rounded-full {% if current_category == category.slug %}bg-primary-600 text-white{% else %}bg-gray-200 text-gray-800 hover:bg-gray-300{% endif %} transition">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+   </div>
 
     <!-- Recipe Cards -->
     <div class="container mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
