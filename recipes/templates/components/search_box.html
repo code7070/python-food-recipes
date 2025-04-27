@@ -1,0 +1,19 @@
+{% comment %} templates/components/search_box.html {% endcomment %}
+
+<div class="max-w-md mx-auto">
+    <!-- <form action="{% url 'recipes:recipe_list' %}" method="get" class="flex"> -->
+    <form action="{{ action }}" method="get" class="flex">
+        <input 
+            class="flex-grow px-4 py-2 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-300 bg-white focus:outline-none" 
+            type="search" 
+            placeholder="{% if placeholder %}{{ placeholder }}{% else %}Cari{% endif %}" 
+            name="q" 
+            value="{{ request.GET.q|default:''  }}"
+            aria-label="Search">
+        <button 
+            class="px-4 rounded-r-lg bg-primary-600 text-white font-bold p-2 border-primary-600 border hover:bg-primary-700 transition" 
+            type="submit">
+            {% if button_text %}{{ button_text }}{% else %}Search{% endif %}
+        </button>
+    </form>
+</div>

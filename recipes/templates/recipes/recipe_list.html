@@ -3,8 +3,8 @@
 {% block title %}All Recipes - Food Recommendation App{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">
+<!-- <div class="container mx-auto px-4 py-8"> -->
+    <h1 class="sticky top-[54px] lg:top-16 z-10 bg-gray-50  container mx-auto px-4 py-4 text-3xl font-bold text-gray-800 mb-6">
         {% if current_category %}
             {{ current_category|title }} Recipes
         {% elif search_query %}
@@ -15,17 +15,15 @@
     </h1>
 
     <!-- Search Bar -->
-    <div class="max-w-md mx-auto mb-8">
-        <form action="{% url 'recipes:recipe_list' %}" method="get" class="flex">
-            <input class="flex-grow px-4 py-2 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-300 bg-white focus:outline-none" 
-                   type="search" placeholder="Search recipes, ingredients..." name="q" value="{{ search_query|default:'' }}" aria-label="Search">
-            <button class="px-4 rounded-r-lg bg-primary-600 text-white font-bold p-2 border-primary-600 border hover:bg-primary-700 transition" 
-                    type="submit">Search</button>
-        </form>
+    <div class="container mx-auto px-4 py-4 max-w-md mx-auto mb-8">
+        <!-- Search Bar Component -->
+        {% load component_tags %}
+        {% url 'recipes:recipe_list' as recipe_list_url %}
+        {% search_box_recipes action=recipe_list_url placeholder="Search recipes, ingridients or categorys..." %}
     </div>
 
     <!-- Category Filters -->
-    <div class="flex flex-wrap justify-center gap-2 mb-8">
+    <div class="container mx-auto px-4 py-8 flex flex-wrap justify-center gap-2 mb-8">
         <a href="{% url 'recipes:recipe_list' %}" 
            class="px-4 py-2 rounded-full {% if not current_category %}bg-primary-600 text-white{% else %}bg-gray-200 text-gray-800 hover:bg-gray-300{% endif %} transition">
             All
@@ -39,7 +37,7 @@
     </div>
 
     <!-- Recipe Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="container mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for recipe in recipes %}
             <div class="bg-white rounded-lg shadow-md overflow-hidden transition transform hover:-translate-y-1 hover:shadow-lg">
                 {% if recipe.image_url %}
@@ -64,5 +62,5 @@
             </div>
         {% endfor %}
     </div>
-</div>
+<!-- </div> -->
 {% endblock %}

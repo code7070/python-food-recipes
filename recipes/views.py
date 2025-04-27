@@ -15,7 +15,6 @@ def home(request):
     
     # Recent recipes
     recent_recipes = Recipe.objects.order_by('-created_at')[:8]
-    
     context = {
         'featured_recipes': featured_recipes,
         'category_recipes': category_recipes,

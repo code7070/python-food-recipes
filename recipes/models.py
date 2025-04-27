@@ -1,12 +1,12 @@
 from django.db import models
 
 class Category(models.Model):
-    id_category = models.CharField(max_length=10, unique=True, null=True, blank=True)  # Tambahkan kolom ini
+    id_category = models.CharField(max_length=10, unique=True, null=True, blank=True)  
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='categories/', blank=True, null=True)
-    image_url = models.URLField(blank=True, null=True)  # Tambahkan kolom ini
+    image_url = models.URLField(blank=True, null=True)  
     
     def __str__(self):
         return self.name
@@ -30,8 +30,8 @@ class Recipe(models.Model):
     serving_size = models.PositiveIntegerField(default=2)
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES, default='medium')
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
-    image_url = models.URLField(blank=True, null=True)  # Add this field for TheMealDB image URLs
-    id_meal = models.CharField(max_length=10, unique=True, null=True, blank=True)  # Add this field for TheMealDB ID
+    image_url = models.URLField(blank=True, null=True)  
+    id_meal = models.CharField(max_length=10, unique=True, null=True, blank=True)  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_featured = models.BooleanField(default=False)
