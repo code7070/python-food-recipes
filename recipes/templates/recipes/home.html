@@ -1,0 +1,129 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Home - Food Recommendation App{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-primary-100 to-primary-50 pt-12 pb-1">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">What Should You Cook Today?</h1>
+        <p class="text-xl text-gray-600 mb-8">Discover delicious recipes tailored to your preferences</p>
+    </div>
+</div>
+<div class="bg-gradient-to-r from-primary-100 to-primary-50 pt-6 pb-6 sticky top-[54px] lg:top-16  z-50">
+    <div class="container mx-auto px-4 text-center">
+        <!-- Search Bar -->
+        <div class="max-w-md mx-auto">
+            <form action="{% url 'recipes:recipe_list' %}" method="get" class="flex">
+                <input class="flex-grow px-4 py-2 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-300 bg-white focus:outline-none" 
+                    type="search" placeholder="Search recipes, ingredients..." name="q" aria-label="Search">
+                <button class="px-4 rounded-r-lg bg-primary-600 text-white font-bold p-2 border-primary-600 border hover:bg-primary-700 transition" 
+                        type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="container mx-auto px-4 py-8  overflow-scroll"> -->
+    <!-- Today's Recommendations -->
+    <div class="container mx-auto px-4 py-8 bg-gray-50">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 block  sticky top-[144px] lg:top-[154px] z-10">Today's Recommendations</h2>
+    </div>
+    
+    <!-- Featured Recipes Carousel -->
+    <div class="relative mb-12" x-data="{ activeSlide: 0, slides: {{ featured_recipes|length }} }">
+        <div class="overflow-hidden relative rounded-lg shadow-lg">
+            {% for recipe in featured_recipes %}
+                <div class="absolute inset-0 transition-opacity duration-500 ease-in-out" 
+                     x-bind:class="{ 'opacity-0': activeSlide !== {{ forloop.counter0 }}, 'opacity-100': activeSlide === {{ forloop.counter0 }} }">
+                    <div class="bg-white rounded-lg overflow-hidden">
+                        {% if recipe.image_url %}
+                            <img src="{{ recipe.image_url }}" class="w-full h-64 object-cover" alt="{{ recipe.title }}">
+                        {% elif recipe.image %}
+                            <img src="{{ recipe.image.url }}" class="w-full h-64 object-cover" alt="{{ recipe.title }}">
+                        {% else %}
+                            <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">No Image Available</div>
+                        {% endif %}
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold text-gray-800">{{ recipe.title }}</h3>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">{{ recipe.category.name }}</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded">{{ recipe.cooking_time }} mins</span>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">{{ recipe.get_difficulty_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <!-- Carousel Controls -->
+            <button class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-r-lg hover:bg-opacity-50 transition"
+                    x-on:click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-l-lg hover:bg-opacity-50 transition"
+                    x-on:click="activeSlide = (activeSlide + 1) % slides">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+            
+            <!-- Carousel Indicators -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {% for recipe in featured_recipes %}
+                    <button class="w-3 h-3 rounded-full transition-colors duration-300"
+                            x-bind:class="{ 'bg-primary-600': activeSlide === {{ forloop.counter0 }}, 'bg-gray-300': activeSlide !== {{ forloop.counter0 }} }"
+                            x-on:click="activeSlide = {{ forloop.counter0 }}"></button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Categories -->
+    <div class="container mx-auto px-4 py-8 bg-gray-50">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 bg-gray-50 block  sticky top-[144px] lg:top-[154px] z-10">Browse by Category</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-12">
+        {% for category in categories %}
+            <a href="{% url 'recipes:recipe_list' %}?category={{ category.slug }}" class="block group">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition transform hover:-translate-y-1 hover:shadow-lg">
+                    {% if category.image_url %}
+                        <img src="{{ category.image_url }}" class="w-full aspect-square object-cover" alt="{{ category.name }}">
+                    {% else %}
+                        <div class="w-full h-32 bg-gray-200"></div>
+                    {% endif %}
+                    <div class="p-3 text-center">
+                        <h3 class="font-medium text-gray-800 group-hover:text-primary-600 transition">{{ category.name }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    </div>
+
+    <!-- Recent Recipes -->
+    <div class="container mx-auto px-4 py-8 bg-gray-50">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 bg-gray-50 block  sticky top-[144px] lg:top-[154px] z-10">Recently Added</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for recipe in recent_recipes %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden transition transform hover:-translate-y-1 hover:shadow-lg">
+                {% if recipe.image_url %}
+                    <img src="{{ recipe.image_url }}" class="w-full h-48 object-cover" alt="{{ recipe.title }}">
+                {% elif recipe.image %}
+                    <img src="{{ recipe.image.url }}" class="w-full h-48 object-cover" alt="{{ recipe.title }}">
+                {% else %}
+                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+                {% endif %}
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-800">{{ recipe.title }}</h3>
+                    <p class="text-sm text-gray-600 mt-1">{{ recipe.cooking_time }} mins | {{ recipe.get_difficulty_display }}</p>
+                    <div class="mt-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">{{ recipe.category.name }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+<!-- </div> -->
+{% endblock %}
